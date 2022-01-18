@@ -1,20 +1,47 @@
 <template>
-  <div id="nav">
+  <div class="nav">
     <SearchForm />
   </div>
-  <router-view />
+  <div v-show="photoModal">
+    <PhotoModal :photo="photo" />
+  </div>
+  <div>
+    <router-view @photo-event="photoModalEvent" />
+  </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { defineComponent } from "vue";
+import { mapState } from "vuex";
 import SearchForm from "@/components/SearchForm.vue";
+import PhotoModal from "@/components/PhotoModal.vue";
+import Photo from "./model/photo";
 
-@Options({
+export default defineComponent({
+  name: "App",
   components: {
     SearchForm,
+    PhotoModal,
   },
-})
-export default class App extends Vue {}
+  data() {
+    return {
+      photo: {},
+    };
+  },
+  methods: {
+    photoModalEvent(photo: Photo) {
+      this.photo = photo;
+    },
+  },
+
+  computed: {
+    ...mapState(["photoModal"]),
+  },
+});
 </script>
 
-<style></style>
+<style>
+.nav {
+  background-color: #dde2e9;
+}
+</style>

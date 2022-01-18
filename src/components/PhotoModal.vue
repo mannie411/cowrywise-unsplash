@@ -1,10 +1,6 @@
 <template>
   <div>
-    <img :src="photo?.urls?.thumb" :alt="photo?.user.name" />
-    <div>
-      <p>{{ photo?.user.name }}</p>
-      <p>{{ photo?.user.location }}</p>
-    </div>
+    <img :src="photo?.urls?.regular" :alt="photo?.user?.name" />
   </div>
 </template>
 
@@ -13,7 +9,7 @@ import { defineComponent, PropType } from "vue";
 import Photo from "@/model/photo";
 
 export default defineComponent({
-  name: "Card",
+  name: "PhotoModal",
 
   props: {
     photo: { type: Object as PropType<Photo>, required: true },
@@ -21,4 +17,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style></style>

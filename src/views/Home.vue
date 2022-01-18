@@ -1,12 +1,62 @@
 <template>
-  <div class="home"></div>
+  <div>
+    <div v-for="(photo, idx) in photos" :key="idx">
+      <Card :photo="photo" @click="showPhotoModal(photo)" />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { defineComponent } from "vue";
+import { mapMutations } from "vuex";
+import { apiService, baseUrl } from "@/services/api";
+import Card from "@/components/Card.vue";
+import Photo from "@/model/photo";
 
-@Options({
-  components: {},
-})
-export default class Home extends Vue {}
+export default defineComponent({
+  name: "Home",
+
+  props: {},
+
+  components: {
+    Card,
+  },
+
+  data() {
+    return {
+      photos: [],
+    };
+  },
+
+  emits: ["photo-event"],
+
+  created() {
+    this.getPhotos();
+  },
+
+  methods: {
+    ...mapMutations(["TOOGLE_PHOTOMODAL"]),
+
+    getPhotos() {
+      apiService<never>(
+        `${baseUrl}/search/photos?page=1&per_page=9&query=African`
+      )
+        .then((data) => {
+          const { results } = data;
+          this.photos = results;
+        })
+        .catch((e: Error) => {
+          /* show error message */
+          console.log(e);
+        });
+    },
+
+    showPhotoModal(photo: Photo) {
+      this.$emit("photo-event", photo);
+      this.TOOGLE_PHOTOMODAL();
+    },
+  },
+
+  computed: {},
+});
 </script>

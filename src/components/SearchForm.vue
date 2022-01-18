@@ -1,20 +1,29 @@
 <template>
   <div>
-    <input v-model="search" />
+    <form @submit.prevent="searchPhoto">
+      <input v-model="search" ref="input" />
+    </form>
   </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { defineComponent } from "vue";
 
-@Options({
-  props: {
-    search: String,
+export default defineComponent({
+  name: "SearchForm",
+
+  data() {
+    return { search: "" };
   },
-})
-export default class SearchForm extends Vue {
-  search!: string;
-}
+
+  methods: {
+    searchPhoto() {
+      this.$router.push({ path: "search", query: { query: this.search } });
+    },
+  },
+
+  computed: {},
+});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
