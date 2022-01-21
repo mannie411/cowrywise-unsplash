@@ -27,38 +27,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.form-box {
-  padding: 0 30px;
-}
-form {
-  width: 100%;
-  height: 50px;
-  overflow: hidden;
-  border-radius: 10px;
-  padding-left: 10px;
-}
-
-input {
-  padding-left: 10px;
-  border: none;
-  height: 50px;
-  width: 100%;
-}
-
-input:focus {
-  outline: none;
-}
-
-.prefix-icon {
-  justify-content: center;
-  align-items: center;
-  padding-left: 5px;
-}
-.icon {
-  width: 22px;
-  height: 22px;
-}
-</style>
