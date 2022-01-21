@@ -1,12 +1,22 @@
 <template>
-  <div class="nav">
-    <SearchForm />
+  <div class="nav bg-blue">
+    <div class="container flex flex-column">
+      <template v-if="isSearch">
+        <h3 :style="{ fontSize: '30px' }" class="blue-dark">
+          Searching for "<span class="blue-light2">{{ keyword }}</span
+          >"
+        </h3>
+      </template>
+      <template v-else>
+        <SearchForm @searchPhoto="searchPhoto" />
+      </template>
+    </div>
   </div>
-  <div v-show="photoModal">
+  <div class="modal" v-show="photoModal">
     <PhotoModal :photo="photo" />
   </div>
-  <div>
-    <router-view @photo-event="photoModalEvent" />
+  <div class="container overlap">
+    <router-view :key="$route.path" @modalEvent="photoModalEvent" />
   </div>
 </template>
 
@@ -23,25 +33,41 @@ export default defineComponent({
     SearchForm,
     PhotoModal,
   },
+
+  computed: {
+    ...mapState(["photoModal"]),
+    routeName() {
+      return this.$route.name?.toString();
+    },
+  },
+
+  mounted() {
+    if (this.routeName === "Search") this.searchPhoto;
+  },
+
   data() {
     return {
       photo: {},
+      isSearch: false,
+      keyword: "",
     };
   },
+
   methods: {
     photoModalEvent(photo: Photo) {
       this.photo = photo;
     },
+
+    searchPhoto(word: string) {
+      this.isSearch = true;
+      this.keyword = word;
+    },
   },
 
-  computed: {
-    ...mapState(["photoModal"]),
+  watch: {
+    "$route.name"(route) {
+      route === "Search" ? (this.isSearch = true) : (this.isSearch = false);
+    },
   },
 });
 </script>
-
-<style>
-.nav {
-  background-color: #dde2e9;
-}
-</style>

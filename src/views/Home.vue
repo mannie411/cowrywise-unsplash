@@ -1,7 +1,38 @@
 <template>
-  <div>
-    <div v-for="(photo, idx) in photos" :key="idx">
-      <Card :photo="photo" @click="showPhotoModal(photo)" />
+  <div v-if="loading">
+    <div class="grid">
+      <div v-for="p in 9" :key="p" class="card shadow gray-light">
+        <card :loading="loading" />
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" v-else>
+    <div
+      class="card shadow gray-light"
+      v-for="(photo, idx) in photos"
+      :key="idx"
+      @click="showPhotoModal(photo)"
+      :style="{
+        backgroundImage: `url(${photo.urls.regular})`,
+      }"
+    >
+      <card>
+        <template v-slot:photo>
+          <img
+            :src="photo?.urls?.thumb"
+            alt="photo?.user.name"
+            class="gray-light"
+          />
+        </template>
+        <template v-slot:name>
+          {{ photo?.user?.name }}
+        </template>
+
+        <template v-slot:location>
+          {{ photo?.user.location }}
+        </template>
+      </card>
     </div>
   </div>
 </template>
@@ -16,47 +47,71 @@ import Photo from "@/model/photo";
 export default defineComponent({
   name: "Home",
 
-  props: {},
-
   components: {
     Card,
+  },
+
+  computed: {
+    routeName() {
+      return this.$route.name?.toString();
+    },
+  },
+
+  created() {
+    switch (this.routeName) {
+      case "Search":
+        this.searchPhotos();
+        break;
+
+      default:
+        this.getPhotos();
+        break;
+    }
   },
 
   data() {
     return {
       photos: [],
+      loading: true,
     };
   },
 
-  emits: ["photo-event"],
-
-  created() {
-    this.getPhotos();
-  },
+  emits: ["modalEvent"],
 
   methods: {
     ...mapMutations(["TOOGLE_PHOTOMODAL"]),
 
-    getPhotos() {
-      apiService<never>(
-        `${baseUrl}/search/photos?page=1&per_page=9&query=African`
-      )
-        .then((data) => {
-          const { results } = data;
-          this.photos = results;
-        })
-        .catch((e: Error) => {
-          /* show error message */
-          console.log(e);
-        });
+    async getPhotos() {
+      try {
+        const { results } = await apiService<never>(
+          `${baseUrl}/search/photos?page=1&per_page=9&query=African`
+        );
+        this.photos = results;
+        this.loading = false;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async searchPhotos() {
+      const { query } = this.$route.query;
+      try {
+        const { results } = await apiService<never>(
+          `${baseUrl}/search/photos?page=1&per_page=9&query=${
+            query?.toString() ?? "African"
+          }`
+        );
+        this.photos = results;
+        this.loading = false;
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     showPhotoModal(photo: Photo) {
-      this.$emit("photo-event", photo);
+      this.$emit("modalEvent", photo);
       this.TOOGLE_PHOTOMODAL();
     },
   },
-
-  computed: {},
 });
 </script>

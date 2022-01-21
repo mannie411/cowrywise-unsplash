@@ -7,6 +7,5 @@ export async function apiService<T>(url: string): Promise<T> {
   if (!res.ok) {
     throw new Error(res.statusText);
   }
-  const data = await res.json();
-  return data;
+  return await res.json();
 }

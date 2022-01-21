@@ -1,24 +1,40 @@
 <template>
-  <div>
-    <img :src="photo?.urls?.thumb" :alt="photo?.user.name" />
-    <div>
-      <p>{{ photo?.user.name }}</p>
-      <p>{{ photo?.user.location }}</p>
-    </div>
+  <skeleton-box
+    v-if="loading"
+    height="300px"
+    :style="{ borderRadius: '10px 10px 0 0' }"
+    class="gray-light"
+  />
+  <slot v-else name="photo" />
+
+  <div class="info shadow-overlay">
+    <skeleton-box v-if="loading" width="70%" :style="{ marginBottom: '5px' }" />
+    <p v-else>
+      <slot name="name" />
+    </p>
+    <skeleton-box v-if="loading" width="50%" />
+    <p v-else>
+      <slot name="location" />
+    </p>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
-import Photo from "@/model/photo";
+import { defineComponent } from "vue";
+import SkeletonBox from "@/components/Skeleton.vue";
 
 export default defineComponent({
   name: "Card",
 
+  components: {
+    SkeletonBox,
+  },
+
   props: {
-    photo: { type: Object as PropType<Photo>, required: true },
+    loading: {
+      default: false,
+      type: Boolean,
+    },
   },
 });
 </script>
-
-<style scoped></style>
