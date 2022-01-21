@@ -1,4 +1,4 @@
 module.exports = {
   publicPath:
-    process.env.NODE_ENV === "production" ? "/cowrywise-unsplash/" : "/",
+    process.env.NODE_ENV === "production" ? "/" : "/cowrywise-unsplash/",
 };
